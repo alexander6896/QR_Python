@@ -5,6 +5,13 @@ import pyzbar.pyzbar as pyzbar
 import numpy as np
 import cv2
 import time
+import MySQLdb
+
+db = MySQLdb.connect(host="65.99.225.8",    # tu host, usualmente localhost
+                     port=3306,
+                     user="itqiscco_alex",         # tu usuario
+                     passwd="vladimir6896",  # tu password
+                     db="itqiscco_regitstro")        # el nombre de la base de datos
 
 # get the webcam:  
 cap = cv2.VideoCapture(0)
@@ -61,9 +68,21 @@ while(cap.isOpened()):
 
         print(x, y)
 
-        print('Type : ', decodedObject.type)
-        print('Data : ', decodedObject.data,'\n')
+        print('Type1 : ', decodedObject.type)
+        print('Data1 : ', decodedObject.data,'\n')
+        
+        #Pasar a string el dato mandado desde el celular
+        datoConsulta = str(decodedObject.data)
+        print("DAtos a la BD: ", datoConsulta)
+        #Tiempo para leer otro dato espera 5 segundos
+        time.sleep(5)
         #ENCONTRAR LA FORMA DE CONECTAR A BASE DE DATOS Y CREAR LA COLA
+        cursor = db.cursor()
+        #Consulta hacia la Base de Datos
+        sql = "Select * From estacionamiento where `no.control`='%s'"%(datoConsulta)
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        print (result)
 
         barCode = str(decodedObject.data)
         cv2.putText(frame, barCode, (x, y), font, 1, (0,255,255), 2, cv2.LINE_AA)
