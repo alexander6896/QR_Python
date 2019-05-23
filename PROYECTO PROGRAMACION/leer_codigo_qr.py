@@ -39,6 +39,15 @@ def decode(im) :
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
+#Diccionario
+estacionamiento = dict()
+estacionamiento = {
+  1: "", 2: "", 3: "", 4: "", 5: "", 6: "", 7: "", 8: "", 9: "", 10: "",
+  11: "", 12: "", 13: "", 14: "", 15: "", 16: "", 17: "", 18: "", 19: "", 20: "",
+  21: "", 22: "", 23: "", 24: "", 25: "", 26: "", 27: "", 28: "", 29: "", 30: "",
+  31: "", 32: "", 33: "", 34: "", 35: "", 36: "", 37: "", 38: "", 39: "", 40: "",
+}
+
 while(cap.isOpened()):
     # Capture frame-by-frame
     ret, frame = cap.read()
@@ -83,6 +92,56 @@ while(cap.isOpened()):
         cursor.execute(sql)
         result = cursor.fetchall()
         print (result)
+        #Obtencion de ciertas datos de la consulta
+        for row in result:
+              #palabrasSeparadas = row[1:3]
+              nombre = row[1]
+              placas = row[4]
+              noControl = row[5]
+        print ("Nombre: ",nombre)
+        print ("Placas: ",placas)
+        print ("No. Control: ",noControl)
+        datosUsuario = nombre+" "+placas+" "+noControl
+        print ("Los datos del usuarios son: ",datosUsuario)
+
+        ingresoSalida = str(input("Vas a entrar(1) o salir(2)\n"))
+        if(ingresoSalida == "1"):
+              print ("Ingresa el lugar de estacionamiento a elegir los disponibles son los lugares vacios")
+              lugar = input("¿Que lugar vas a seleccionar?\n->")
+              for k,v in estacionamiento.items():
+                print ("%s -> %s" %(k,v))
+              
+              print ("El lugar apartado es el ", lugar)
+              estacionamiento.update({lugar: datosUsuario})
+
+              for k,v in estacionamiento.items():
+                    print ("%s -> %s" %(k,v))
+        else:
+              lugar = input("¿De que lugar vas a salir?\n->")
+              print ("Ingresa el lugar de estacionamiento del cual vas a salir")
+              
+              print ("El lugar apartado es el ", lugar)
+              estacionamiento.update({lugar: ""})
+
+              for k,v in estacionamiento.items():
+                    print ("%s -> %s" %(k,v))
+        
+        """
+        #Uso del diccionario estacionamiento para que un usuario use un lugar del estacionamiento
+        lugar = input("¿Que lugar vas a seleccionar?\n")
+        print ("Ingresa el lugar de estacionamiento a elegir los disponibles son los lugares vacios")
+
+        #Imprimir el diccionario
+        for k,v in estacionamiento.items():
+          print ("%s -> %s" %(k,v))
+
+        print ("El lugar apartado es el ", lugar)
+
+        estacionamiento.update({lugar: datosUsuario})
+
+        #Imprimir el diccionario
+        for k,v in estacionamiento.items():
+          print ("%s -> %s" %(k,v))"""
 
         barCode = str(decodedObject.data)
         cv2.putText(frame, barCode, (x, y), font, 1, (0,255,255), 2, cv2.LINE_AA)
